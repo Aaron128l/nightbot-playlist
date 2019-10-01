@@ -1,6 +1,10 @@
 # nightbot-playlist-v2
 
-## Project setup
+[![Netlify Status](https://api.netlify.com/api/v1/badges/70811b21-8a30-43bd-a1ba-14482e543e88/deploy-status)](https://app.netlify.com/sites/nightbot-playlist/deploys)
+
+A pretty basic Vue Cli setup.
+
+### Project setup
 ```
 yarn install
 ```
@@ -10,20 +14,7 @@ yarn install
 yarn run serve
 ```
 
-### Compiles and minifies for production
-```
-yarn run build
-```
-
-### Run your tests
-```
-yarn run test
-```
-
 ### Lints and fixes files
 ```
 yarn run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

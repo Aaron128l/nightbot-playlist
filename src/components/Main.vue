@@ -14,7 +14,7 @@
     </div>
 
     <!-- Logged in -->
-    <div class="align-self-center w-100 mx-auto" v-if="auth">
+    <div class="align-self-center w-100 mx-auto" v-else>
       <h5>Format your output file</h5>
       <b-row no-gutters class="my-1">
         <b-input-group>
@@ -91,6 +91,7 @@ export default {
       this.renderText()
     }
   },
+  // TODO: Clean this up.
   methods: {
     login (e) {
       e.preventDefault()
