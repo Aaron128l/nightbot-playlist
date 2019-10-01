@@ -1,17 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
-import store from './store'
-
 import BootstrapVue from 'bootstrap-vue'
-Vue.use(BootstrapVue)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTwitter, faDiscord, faDiscourse } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-/* eslint-disable import/first */
-// import 'bootstrap/dist/css/bootstrap.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
+library.add(faTwitter, faDiscord, faDiscourse)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
 
 new Vue({
-  store,
   render: h => h(App)
 }).$mount('#app')
