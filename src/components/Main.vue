@@ -196,7 +196,7 @@ export default {
         this.user = { ...this.user, ...data.data.user }
         this.auth = true
         this.getsongs()
-        axios.post('/.netlify/functions/webhook', { user: this.user } )
+        axios.post('/.netlify/functions/webhook', { user: this.user })
       })
       .catch(error => {
         this.showAlert('Something went wrong fetching your profile...')
