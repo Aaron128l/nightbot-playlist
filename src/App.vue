@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <Header />
-    <Content class="d-flex"/>
-    <Footer class="d-flex pt-3 pb-3"/>
+    <Content class="d-flex" />
+    <Footer class="d-flex pt-3 pb-3" />
   </div>
 </template>
 

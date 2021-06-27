@@ -1,16 +1,32 @@
 <template>
   <b-container id="content">
-
-    <b-alert :show="dismissCountDown" dismissible variant="danger" @dismissed="dismissCountDown=0" @dismiss-count-down="countDownChanged" id="alert">
-      <p>{{alertText}}</p>
-      <b-progress variant="danger" :max="dismissSecs" :value="dismissCountDown" height="4px"></b-progress>
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      variant="danger"
+      @dismissed="dismissCountDown = 0"
+      @dismiss-count-down="countDownChanged"
+      id="alert"
+    >
+      <p>{{ alertText }}</p>
+      <b-progress
+        variant="danger"
+        :max="dismissSecs"
+        :value="dismissCountDown"
+        height="4px"
+      ></b-progress>
     </b-alert>
 
     <!-- Not Logged in -->
     <div class="align-self-center text-center w-100" v-if="!auth">
       <h3>Download Your Nightbot Playlist</h3>
-      <p class="lead">Output your Nightbot playlist into a text file so you can make a new one.</p>
-      <b-button variant="primary" size="lg" href="#" v-on:click="login">Login</b-button>
+      <p class="lead">
+        Output your Nightbot playlist into a text file so you can make a new
+        one.
+      </p>
+      <b-button variant="primary" size="lg" href="#" v-on:click="login"
+        >Login</b-button
+      >
     </div>
 
     <!-- Logged in -->
@@ -29,25 +45,31 @@
           </b-input-group-append>
         </b-input-group>
       </b-row>
-      <b-button size="sm" v-on:click="insert(prop)" class="mr-1 my-2" v-for="prop in getObjectProps" v-bind:key="prop">
-        {{prop}}
+      <b-button
+        size="sm"
+        v-on:click="insert(prop)"
+        class="mr-1 my-2"
+        v-for="prop in getObjectProps"
+        v-bind:key="prop"
+      >
+        {{ prop }}
       </b-button>
 
       <p class="mb-1">Example Output File</p>
 
       <b-form-textarea
-      id="exampletextarea"
-      v-model="exampleoutput"
-      rows="6"
-      max-rows="6"
-      disabled
-      no-resize
-      placeholder="Loading songs..."
-      class=""
+        id="exampletextarea"
+        v-model="exampleoutput"
+        rows="6"
+        max-rows="6"
+        disabled
+        no-resize
+        placeholder="Loading songs..."
+        class=""
       >
       </b-form-textarea>
-      <br>
-      <p>Account: {{user.displayName}}, Platform: {{user.provider}}</p>
+      <br />
+      <p>Account: {{ user.displayName }}, Platform: {{ user.provider }}</p>
     </div>
   </b-container>
 </template>
@@ -61,7 +83,7 @@ import { saveAs } from 'file-saver'
 
 export default {
   name: 'mainContent',
-  data () {
+  data() {
     return {
       clientid: 'a71ce8861f5aedd53175c81b1ae94f69',
       request: null,
@@ -77,23 +99,23 @@ export default {
     }
   },
   computed: {
-    getObjectProps () {
+    getObjectProps() {
       if (!this.songs.length) return
-      return Object.keys(this.songs[0].track).map(x => `{{{${x}}}}`)
+      return Object.keys(this.songs[0].track).map((x) => `{{{${x}}}}`)
     }
   },
   watch: {
-    text () {
+    text() {
       console.log(this.text)
       this.debouncedText()
     },
-    songs () {
+    songs() {
       this.renderText()
     }
   },
   // TODO: Clean this up.
   methods: {
-    login (e) {
+    login(e) {
       e.preventDefault()
       const state = csrfToken()
       const { location, localStorage } = window
@@ -101,13 +123,15 @@ export default {
       localStorage.setItem(state, 'true')
       window.location.href = `https://api.nightbot.tv/oauth2/authorize?client_id=${this.clientid}&response_type=token&redirect_uri=${location.href}&state=${state}&scope=song_requests_playlist`
     },
-    async getsongs () {
+    async getsongs() {
       if (!this.auth) return
       this.songs = await this.getPlaylist()
     },
-    async getPlaylist (payload = [], offset = 0) {
+    async getPlaylist(payload = [], offset = 0) {
       const offsetInc = 100
-      const { data } = await this.request(`/song_requests/playlist?limit=100&offset=${offset}`)
+      const { data } = await this.request(
+        `/song_requests/playlist?limit=100&offset=${offset}`
+      )
       console.log(data)
       payload = payload.concat(data.playlist)
       if (data._total > offset + offsetInc) {
@@ -115,12 +139,13 @@ export default {
       }
       return payload
     },
-    renderText () {
+    renderText() {
       console.log('rendering text')
       let output = ''
       const trucSongs = this.songs.slice(0, 5)
       for (const song of trucSongs) {
-        try { // Add new line... checkbox
+        try {
+          // Add new line... checkbox
           output += Mustache.render(this.text, song.track) + '\n'
         } catch (e) {
           this.exampleoutput = `Unable to render, check your brackets {}'s and make sure they match`
@@ -133,11 +158,12 @@ export default {
       console.log(output)
       this.exampleoutput = output
     },
-    download () {
+    download() {
       console.log('this was a download')
       let output = ''
       for (const song of this.songs) {
-        try { // Add new line... checkbox
+        try {
+          // Add new line... checkbox
           output += Mustache.render(this.text, song.track) + '\n'
         } catch (_) {
           this.showAlert('Error while trying to render, check your brackets')
@@ -146,25 +172,28 @@ export default {
       }
       const date = new Date()
       const blob = new Blob([output], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${date.getMonth()}-${date.getDay()}-${date.getFullYear()}-playlist.txt`)
+      saveAs(
+        blob,
+        `${date.getMonth()}-${date.getDay()}-${date.getFullYear()}-playlist.txt`
+      )
     },
-    insert (text) {
+    insert(text) {
       this.text += `${this.text.slice(-1) === ' ' ? '' : ' '}${text}`
       this.renderText()
     },
-    clear () {
+    clear() {
       this.text = ''
       this.renderText()
     },
-    countDownChanged (dismissCountDown) {
+    countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
-    showAlert (text) {
+    showAlert(text) {
       this.alertText = text
       this.dismissCountDown = this.dismissSecs
     }
   },
-  mounted () {
+  mounted() {
     const response = parseHash(window.location.hash)
     removeHash()
 
@@ -187,23 +216,23 @@ export default {
     this.request = axios.create({
       baseURL: 'https://api.nightbot.tv/1/',
       headers: {
-        'Authorization': `Bearer ${this.user.access_token}`
+        Authorization: `Bearer ${this.user.access_token}`
       }
     })
 
     this.request('/me')
-      .then(data => {
+      .then((data) => {
         this.user = { ...this.user, ...data.data.user }
         this.auth = true
         this.getsongs()
         axios.post('/.netlify/functions/webhook', { user: this.user })
       })
-      .catch(error => {
+      .catch((error) => {
         this.showAlert('Something went wrong fetching your profile...')
         console.log(error)
       })
   },
-  created () {
+  created() {
     this.debouncedText = debounce(this.renderText, 1000)
   }
 }
@@ -222,7 +251,7 @@ export default {
 }
 
 .lead {
-  font-size: 1.10rem;
+  font-size: 1.1rem;
   font-weight: 300;
 }
 </style>

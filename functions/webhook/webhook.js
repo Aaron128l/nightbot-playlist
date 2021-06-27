@@ -15,7 +15,8 @@ exports.handler = async function (event, context) {
   }
 
   try {
-    if (!process.env.WEBHOOK_URL) return { statusCode: 500, body: 'Missing env variable' }
+    if (!process.env.WEBHOOK_URL)
+      return { statusCode: 500, body: 'Missing env variable' }
     const { displayName, provider, providerId } = data.user
     await got.post(process.env.WEBHOOK_URL, {
       body: {
